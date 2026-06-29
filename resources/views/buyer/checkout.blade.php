@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <form action="{{ route('buyer.checkout', $product->id) }}" method="POST">
+    <form action="{{ route('buyer.checkout', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <!-- Rincian Biaya -->
@@ -46,7 +46,7 @@
             </div>
             <div class="list-item" style="border-top: 1px dashed rgba(255,255,255,0.2); margin-top: 10px; padding-top: 15px; font-weight: bold; font-size: 1.1rem;">
                 <span>Total Pembayaran</span>
-                <span>Rp {{ number_format($product->price + $product->service_fee, 0, ',', '.') }}</span>
+                <span style="color: var(--warning);">Rp {{ number_format($product->price + $product->service_fee, 0, ',', '.') }}</span>
             </div>
         </div>
 
@@ -70,32 +70,38 @@
             <div class="section-title">Metode Pembayaran</div>
             <div style="display: flex; flex-direction: column; gap: 15px;">
                 
-                @if($product->payment_method === 'qris' || $product->payment_method === 'both')
-                    <label style="display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg); padding: 15px; border-radius: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div class="payment-badge" style="background-color: white; color: black;">QRIS</div>
-                            <span style="font-weight: 500;">QRIS SmartThrift</span>
-                        </div>
-                        <input type="radio" name="payment_method" value="qris" checked style="width: 20px; height: 20px; accent-color: var(--accent-red);">
-                    </label>
-                @endif
+                <!-- DANA Info Card -->
+                <div style="background-color: var(--bg-darker); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                        <div class="payment-badge" style="background-color: #008DDA; color: white; padding: 4px 10px; font-weight: bold; border-radius: 6px; font-size: 0.8rem;">DANA</div>
+                        <span style="font-weight: 600; font-size: 0.95rem;">DANA SmartThrift Admin</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px;">
+                        Silahkan transfer sebesar <strong style="color: var(--warning);">Rp {{ number_format($product->price + $product->service_fee, 0, ',', '.') }}</strong> ke nomor DANA berikut:
+                    </div>
+                    <div style="background-color: var(--bg-primary); padding: 12px; border-radius: 8px; text-align: center; font-size: 1.25rem; font-weight: bold; letter-spacing: 0.05em; color: var(--text-primary); border: 1px dashed rgba(255,255,255,0.2); margin-bottom: 5px;">
+                        {{ $danaNumber }}
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; font-style: italic;">
+                        *Simpan bukti transfer berupa screenshot untuk diunggah di bawah.
+                    </div>
+                </div>
 
-                @if($product->payment_method === 'cod' || $product->payment_method === 'both')
-                    <label style="display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg); padding: 15px; border-radius: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div class="payment-badge" style="background-color: white; color: black;">COD</div>
-                            <span style="font-weight: 500;">Bayar di Tempat (COD)</span>
-                        </div>
-                        <input type="radio" name="payment_method" value="cod" {{ ($product->payment_method === 'cod') ? 'checked' : '' }} style="width: 20px; height: 20px; accent-color: var(--accent-red);">
-                    </label>
-                @endif
+                <input type="hidden" name="payment_method" value="dana">
+
+                <!-- Upload Screenshot Field -->
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="font-weight: bold;">Upload Bukti Pembayaran (Screenshot)</label>
+                    <input type="file" name="payment_receipt" class="form-input" style="background-color: var(--bg-primary); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px;" accept="image/*" required>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 5px;">Format file: JPG, JPEG, PNG (Maks 2MB)</span>
+                </div>
 
             </div>
         </div>
 
         <!-- Checkout Button -->
         <div style="margin-top: 25px; margin-bottom: 10px;">
-            <button type="submit" class="btn-primary">Bayar Sekarang</button>
+            <button type="submit" class="btn-primary">Bayar & Konfirmasi</button>
         </div>
     </form>
 

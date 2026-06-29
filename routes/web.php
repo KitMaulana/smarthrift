@@ -49,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/notifications', [BuyerController::class, 'notifications'])->name('buyer.notifications');
         Route::post('/order/{orderId}/confirm', [BuyerController::class, 'confirmDelivery'])->name('buyer.confirm_delivery');
         Route::post('/order/{orderId}/return', [BuyerController::class, 'requestReturn'])->name('buyer.request_return');
+        Route::post('/order/{orderId}/testimonial', [BuyerController::class, 'storeTestimonial'])->name('buyer.store_testimonial');
     });
 
     // Seller/Penjual Routes
@@ -76,7 +77,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/admin/products/{id}/approve', [AdminController::class, 'approveProduct'])->name('admin.approve_product');
         Route::delete('/admin/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.delete_product');
         
+        Route::post('/admin/settings/dana', [AdminController::class, 'updateDanaNumber'])->name('admin.update_dana');
         Route::get('/admin/transactions', [AdminController::class, 'transactions'])->name('admin.transactions');
+        Route::post('/admin/transactions/{id}/confirm-payment', [AdminController::class, 'confirmPaymentAndAssignCourier'])->name('admin.confirm_payment');
+        Route::post('/admin/transactions/{id}/complete', [AdminController::class, 'completeOrder'])->name('admin.complete_order');
         Route::post('/admin/transactions/{id}/approve-shipping', [AdminController::class, 'approveShipping'])->name('admin.approve_shipping');
         Route::post('/admin/transactions/{id}/approve-return', [AdminController::class, 'approveReturn'])->name('admin.approve_return');
         Route::post('/admin/transactions/{id}/reject-return', [AdminController::class, 'rejectReturn'])->name('admin.reject_return');

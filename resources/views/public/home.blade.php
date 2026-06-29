@@ -69,5 +69,36 @@
         @endforelse
     </div>
 
+    <!-- Testimoni Section -->
+    <div class="section-card" style="margin-top: 30px; margin-bottom: 20px; background-color: var(--bg-secondary);">
+        <div class="section-title" style="display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--warning);">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>Testimoni SmartThrift</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+            @forelse($testimonials as $t)
+                <div style="background-color: var(--bg-darker); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-weight: bold; font-size: 0.85rem; color: var(--text-primary);">{{ $t->user->name }}</span>
+                        <span style="color: var(--warning); font-size: 0.8rem;">
+                            @for($i = 1; $i <= 5; $i++)
+                                {{ $i <= $t->rating ? '★' : '☆' }}
+                            @endfor
+                        </span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; line-height: 1.4;">
+                        "{{ $t->comment }}"
+                    </div>
+                </div>
+            @empty
+                <div style="text-align: center; padding: 15px 0; color: var(--text-muted); font-size: 0.85rem;">
+                    Belum ada testimoni. Jadilah yang pertama memberikan ulasan!
+                </div>
+            @endforelse
+        </div>
+    </div>
+
 </div>
 @endsection

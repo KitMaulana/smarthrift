@@ -17,6 +17,8 @@ class Order extends Model
         'service_fee',
         'total_price',
         'payment_method',
+        'payment_receipt',
+        'delivery_proof',
         'status',
         'shipping_address',
         'shipping_phone',
@@ -40,5 +42,10 @@ class Order extends Model
     public function notifications()
     {
         return $this->hasMany(Notification::class, 'order_id');
+    }
+
+    public function testimonial()
+    {
+        return $this->hasOne(Testimonial::class, 'order_id');
     }
 }

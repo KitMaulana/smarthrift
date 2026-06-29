@@ -26,10 +26,20 @@ class CourierController extends Controller
     {
         $request->validate([
             'status' => 'required|in:shipped,delivered',
+            'delivery_proof' => 'required_if:status,delivered|image|max:2048',
         ]);
 
         $order = Order::where('courier_id', Auth::id())->findOrFail($orderId);
-        $order->update(['status' => $request->status]);
+        
+        $updateData = ['status' => $request->status];
+
+        if ($request->status === 'delivered' && $request->hasFile('delivery_proof')) {
+            $fileName = time() . '_' . $request->file('delivery_proof')->getClientOriginalName();
+            $request->file('delivery_proof')->move(public_path('uploads/delivery_proofs'), $fileName);
+            $updateData['delivery_proof'] = 'uploads/delivery_proofs/' . $fileName;
+        }
+
+        $order->update($updateData);
 
         // Send notifications based on status change
         if ($request->status === 'shipped') {

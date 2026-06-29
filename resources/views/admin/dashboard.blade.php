@@ -67,6 +67,47 @@
         </a>
     </div>
 
+    <!-- Pengaturan DANA Admin -->
+    <div class="section-card" style="margin-bottom: 20px;">
+        <div class="section-title">Pengaturan Nomor DANA Admin</div>
+        <form action="{{ route('admin.update_dana') }}" method="POST" style="display: flex; gap: 10px; align-items: flex-end;">
+            @csrf
+            <div style="flex: 1;">
+                <label class="form-label" style="margin-bottom: 4px; font-size: 0.8rem; color: var(--text-muted);">Nomor DANA Admin</label>
+                <input type="text" name="dana_number" value="{{ $danaNumber }}" class="form-input" style="padding: 10px; font-size: 0.9rem;" placeholder="Contoh: 08XXXXXXXX" required>
+            </div>
+            <button type="submit" class="btn-primary" style="width: auto; padding: 10px 20px; font-size: 0.85rem; text-transform: none; margin-bottom: 0; border-radius: 8px;">Simpan</button>
+        </form>
+    </div>
+
+    <!-- Pesanan Menunggu Penyelesaian -->
+    @if(count($deliveredOrders) > 0)
+        <div class="section-card" style="margin-bottom: 20px; border: 1px solid var(--success);">
+            <div class="section-title" style="color: var(--success); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <span>Pesanan Menunggu Penyelesaian</span>
+                <span class="status-badge delivered" style="font-size: 0.7rem; padding: 2px 6px;">{{ count($deliveredOrders) }} Baru</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                @foreach($deliveredOrders as $order)
+                    <div style="background-color: var(--bg-darker); padding: 12px; border-radius: 8px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05);">
+                        <div>
+                            <strong>#ST-{{ $order->id }}</strong> &bull; {{ $order->product->name }}
+                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                                Kurir: {{ $order->courier->name }} &bull; Pembeli: {{ $order->buyer->name }}
+                            </div>
+                        </div>
+                        <form action="{{ route('admin.complete_order', $order->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-primary" style="background-color: var(--success); padding: 6px 12px; font-size: 0.75rem; text-transform: none; border-radius: 6px; width: auto; margin-bottom: 0;">
+                                Selesaikan
+                            </button>
+                        </form>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Recent Transactions -->
     <div class="section-card">
         <div class="section-title">Transaksi Terbaru</div>

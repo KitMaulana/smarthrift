@@ -42,8 +42,57 @@
                     <div>Total: <strong>Rp {{ number_format($order->total_price, 0, ',', '.') }}</strong></div>
                 </div>
 
+                <!-- Payment Receipt Proof -->
+                @if($order->payment_receipt)
+                    <div style="margin-top: 10px; padding: 10px; background-color: var(--bg-darker); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;"><strong>Bukti Transfer DANA Pembeli:</strong></div>
+                        <a href="{{ asset($order->payment_receipt) }}" target="_blank">
+                            <img src="{{ asset($order->payment_receipt) }}" alt="Bukti Transfer" style="max-width: 100%; max-height: 120px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); object-fit: contain;">
+                        </a>
+                    </div>
+                @endif
+
+                <!-- Delivery Proof -->
+                @if($order->delivery_proof)
+                    <div style="margin-top: 10px; padding: 10px; background-color: var(--bg-darker); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px;"><strong>Bukti Kirim Kurir:</strong></div>
+                        <a href="{{ asset($order->delivery_proof) }}" target="_blank">
+                            <img src="{{ asset($order->delivery_proof) }}" alt="Bukti Kirim" style="max-width: 100%; max-height: 120px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); object-fit: contain;">
+                        </a>
+                    </div>
+                @endif
+
                 <!-- Admin Approvals Actions -->
-                @if($order->status === 'pending_shipping_approval')
+                @if($order->status === 'pending_payment_confirmation')
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 10px;">
+                        <form action="{{ route('admin.confirm_payment', $order->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 8px;">
+                            @csrf
+                            <div>
+                                <label class="form-label" style="font-size: 0.75rem; margin-bottom: 4px; color: var(--text-muted);">Pilih Kurir Pengirim</label>
+                                <select name="courier_id" class="form-select" style="padding: 8px; font-size: 0.8rem; height: auto; background-color: var(--bg-primary); color: white; border: 1px solid rgba(255,255,255,0.1);" required>
+                                    <option value="">-- Pilih Kurir --</option>
+                                    @foreach($couriers as $courier)
+                                        <option value="{{ $courier->id }}">{{ $courier->name }} ({{ $courier->phone }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end;">
+                                <button type="submit" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem; text-transform: none; border-radius: 6px; width: auto; background-color: var(--success); margin-bottom: 0;">
+                                    Konfirmasi & Teruskan ke Kurir
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                @elseif($order->status === 'delivered')
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 10px; display: flex; justify-content: flex-end;">
+                        <form action="{{ route('admin.complete_order', $order->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem; text-transform: none; border-radius: 6px; width: auto; background-color: var(--success); margin-bottom: 0;">
+                                Selesaikan Pesanan
+                            </button>
+                        </form>
+                    </div>
+                @elseif($order->status === 'pending_shipping_approval')
                     <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 10px; display: flex; justify-content: flex-end;">
                         <form action="{{ route('admin.approve_shipping', $order->id) }}" method="POST">
                             @csrf

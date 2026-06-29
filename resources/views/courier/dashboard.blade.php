@@ -80,14 +80,23 @@
                             </button>
                         </form>
                     @elseif($order->status === 'shipped')
-                        <form action="{{ route('courier.update_status', $order->id) }}" method="POST">
+                        <form action="{{ route('courier.update_status', $order->id) }}" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 10px;">
                             @csrf
                             <input type="hidden" name="status" value="delivered">
+                            <div>
+                                <label class="form-label" style="font-size: 0.8rem; margin-bottom: 4px; color: var(--text-muted);">Bukti Pengiriman (Foto/Screenshot)</label>
+                                <input type="file" name="delivery_proof" class="form-input" style="background-color: var(--bg-darker); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px; font-size: 0.85rem;" accept="image/*" required>
+                            </div>
                             <button type="submit" class="btn-primary" style="background-color: var(--success); font-size: 0.85rem; padding: 10px; text-transform: none; margin-bottom: 0;">
-                                Tandai sebagai Tiba di Tujuan
+                                Kirim Bukti & Tandai Tiba
                             </button>
                         </form>
                     @else
+                        @if($order->delivery_proof)
+                            <div style="margin-top: 8px; margin-bottom: 8px; text-align: center;">
+                                <img src="{{ asset($order->delivery_proof) }}" alt="Bukti Kirim" style="max-width: 100%; max-height: 100px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); object-fit: contain;">
+                            </div>
+                        @endif
                         <div style="font-size: 0.8rem; color: var(--success); font-style: italic; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
                             Selesai &bull; Barang telah diantarkan.
                         </div>

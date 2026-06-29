@@ -14,7 +14,13 @@ class PublicController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('public.home', compact('products'));
+        // Get testimonials
+        $testimonials = \App\Models\Testimonial::with('user')
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('public.home', compact('products', 'testimonials'));
     }
 
     public function explore(Request $request)
@@ -45,6 +51,7 @@ class PublicController extends Controller
     public function showProduct($id)
     {
         $product = Product::with('seller')->findOrFail($id);
-        return view('public.product_detail', compact('product'));
+        $admin = \App\Models\User::where('role', 'admin')->first();
+        return view('public.product_detail', compact('product', 'admin'));
     }
 }

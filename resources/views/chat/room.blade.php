@@ -13,7 +13,7 @@
     
     <!-- User avatar & info -->
     <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-        <div class="profile-avatar" style="background-color: {{ $otherUser->role === 'penjual' ? '#83C5BE' : '#E29578' }}; color: white; width: 38px; height: 38px; font-size: 0.95rem; margin-right: 0; position: relative;">
+        <div class="profile-avatar" style="background-color: {{ $otherUser->role === 'admin' ? 'var(--accent-red)' : ($otherUser->role === 'penjual' ? '#83C5BE' : '#E29578') }}; color: white; width: 38px; height: 38px; font-size: 0.95rem; margin-right: 0; position: relative;">
             {{ strtoupper(substr($otherUser->name, 0, 1)) }}
             <!-- Online status green dot -->
             <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background-color: #2ec4b6; border-radius: 50%; border: 2px solid var(--bg-primary);"></span>
@@ -21,7 +21,7 @@
         <div>
             <div style="font-weight: bold; font-size: 0.95rem;">{{ $otherUser->name }}</div>
             <div style="font-size: 0.75rem; color: var(--text-muted);">
-                Online {{ $otherUser->role === 'pelanggan' ? 'Pembeli' : 'Penjual' }}
+                Online {{ $otherUser->role === 'admin' ? 'Admin' : ($otherUser->role === 'pelanggan' ? 'Pembeli' : 'Penjual') }}
             </div>
         </div>
     </div>
@@ -55,9 +55,8 @@
                 @php
                     $isOutgoing = ($msg->sender_id === Auth::id());
                 @endphp
-                <div class="message-bubble {{ $isOutgoing ? 'outgoing' : 'incoming' }}">
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 3px; font-weight: 600;">
-                        {{ $isOutgoing ? 'Anda' : ($otherUser->role === 'pelanggan' ? 'Pembeli' : 'Penjual') }}
+                        {{ $isOutgoing ? 'Anda' : ($otherUser->role === 'admin' ? 'Admin' : ($otherUser->role === 'pelanggan' ? 'Pembeli' : 'Penjual')) }}
                     </div>
                     <div>{{ $msg->message }}</div>
                     <div style="font-size: 0.65rem; color: var(--text-muted); text-align: right; margin-top: 3px;">

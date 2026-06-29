@@ -107,21 +107,30 @@
 <!-- Fixed Bottom Actions -->
 <div class="detail-actions-fixed">
     @guest
-        <a href="{{ route('login') }}" class="btn-secondary" style="display: flex; align-items: center; justify-content: center;">Chat</a>
-        <a href="{{ route('login') }}" class="btn-primary">Beli</a>
+        <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Penjual</a>
+        <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
+        <a href="{{ route('login') }}" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</a>
     @else
         @if(Auth::id() === $product->seller_id)
-            <div style="width: 100%; text-align: center; color: var(--text-muted); font-style: italic;">
-                Ini adalah pakaian yang Anda jual.
+            @if($admin)
+                <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 15px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
+            @endif
+            <div style="flex: 2; text-align: center; color: var(--text-muted); font-style: italic; font-size: 0.85rem; align-self: center;">
+                Ini adalah pakaian Anda.
             </div>
         @else
-            <a href="{{ route('chat.show', ['userId' => $product->seller_id, 'product_id' => $product->id]) }}" class="btn-secondary" style="display: flex; align-items: center; justify-content: center;">Chat</a>
+            <a href="{{ route('chat.show', ['userId' => $product->seller_id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Penjual</a>
+            @if($admin)
+                <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
+            @else
+                <button onclick="alert('Admin tidak tersedia saat ini.')" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px;">Chat Admin</button>
+            @endif
             
             @if(Auth::user()->isPelanggan())
-                <a href="{{ route('buyer.checkout', $product->id) }}" class="btn-primary">Beli</a>
+                <a href="{{ route('buyer.checkout', $product->id) }}" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</a>
             @else
                 <!-- Non-customers are prompted to register as customer to buy -->
-                <button onclick="alert('Anda harus masuk dengan akun Pelanggan untuk melakukan pembelian. Akun Kurir/Seller/Admin tidak dapat melakukan pembelian.')" class="btn-primary">Beli</button>
+                <button onclick="alert('Anda harus masuk dengan akun Pelanggan untuk melakukan pembelian. Akun Kurir/Seller/Admin tidak dapat melakukan pembelian.')" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</button>
             @endif
         @endif
     @endguest

@@ -16,7 +16,7 @@
     <div style="width: 24px;"></div>
 </div>
 
-<div class="app-content" style="padding-bottom: 20px;">
+<div class="app-content" style="padding-bottom: 110px;">
     
     <div class="welcome-logo-container" style="margin-top: 10px; margin-bottom: 20px;">
         <img src="{{ asset('images/logo.png') }}" class="welcome-logo-img" alt="SmartThrift">

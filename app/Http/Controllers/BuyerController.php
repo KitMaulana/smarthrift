@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Notification;
+use App\Models\Setting;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +48,8 @@ class BuyerController extends Controller
             return redirect()->route('home')->with('error', 'Produk ini sudah terjual.');
         }
         $user = Auth::user();
-        return view('buyer.checkout', compact('product', 'user'));
+        $danaNumber = Setting::get('admin_dana_number', '08111222333');
+        return view('buyer.checkout', compact('product', 'user', 'danaNumber'));
     }
 
     public function checkout(Request $request, $productId)
@@ -59,22 +62,28 @@ class BuyerController extends Controller
         $request->validate([
             'shipping_address' => 'required|string',
             'shipping_phone' => 'required|string',
-            'payment_method' => 'required|in:qris,cod',
+            'payment_method' => 'required|in:dana',
+            'payment_receipt' => 'required|image|max:2048',
         ]);
 
-        // Auto-assign a courier from seeded couriers (role = kurir)
-        $courier = User::where('role', 'kurir')->first();
+        $receiptPath = null;
+        if ($request->hasFile('payment_receipt')) {
+            $fileName = time() . '_' . $request->file('payment_receipt')->getClientOriginalName();
+            $request->file('payment_receipt')->move(public_path('uploads/receipts'), $fileName);
+            $receiptPath = 'uploads/receipts/' . $fileName;
+        }
 
-        // Create Order
+        // Create Order with status pending_payment_confirmation, no courier assigned yet
         $order = Order::create([
             'buyer_id' => Auth::id(),
             'product_id' => $product->id,
-            'courier_id' => $courier ? $courier->id : null,
+            'courier_id' => null,
             'price' => $product->price,
             'service_fee' => $product->service_fee,
             'total_price' => $product->price + $product->service_fee,
             'payment_method' => $request->payment_method,
-            'status' => 'pending_shipping_approval', // Requires admin approval before shipping
+            'payment_receipt' => $receiptPath,
+            'status' => 'pending_payment_confirmation',
             'shipping_address' => $request->shipping_address,
             'shipping_phone' => $request->shipping_phone,
         ]);
@@ -87,18 +96,10 @@ class BuyerController extends Controller
             'user_id' => Auth::id(),
             'order_id' => $order->id,
             'title' => 'Pesanan Berhasil Dibuat',
-            'message' => "Pesanan {$product->name} Anda sedang menunggu persetujuan pengiriman dari admin.",
+            'message' => "Pesanan {$product->name} Anda sedang menunggu konfirmasi pembayaran dari admin.",
         ]);
 
-        // Create Notification for Seller
-        Notification::create([
-            'user_id' => $product->seller_id,
-            'order_id' => $order->id,
-            'title' => 'Produk Terjual',
-            'message' => "Produk {$product->name} telah dibeli oleh " . Auth::user()->name . ". Menunggu persetujuan pengiriman admin.",
-        ]);
-
-        return redirect()->route('buyer.purchases')->with('success', 'Pembelian berhasil! Menunggu persetujuan pengiriman dari admin.');
+        return redirect()->route('buyer.purchases')->with('success', 'Pembelian berhasil! Menunggu konfirmasi pembayaran dari admin.');
     }
 
     public function purchases()
@@ -175,5 +176,28 @@ class BuyerController extends Controller
         ]);
         
         return redirect()->back()->with('success', 'Pengajuan retur berhasil dikirim. Menunggu persetujuan admin.');
+    }
+
+    public function storeTestimonial(Request $request, $orderId)
+    {
+        $order = Order::where('buyer_id', Auth::id())
+            ->where('status', 'completed')
+            ->findOrFail($orderId);
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+        ]);
+
+        Testimonial::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'user_id' => Auth::id(),
+                'rating' => $request->rating,
+                'comment' => $request->comment
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Terima kasih atas ulasan Anda!');
     }
 }
