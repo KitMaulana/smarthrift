@@ -2,6 +2,15 @@
 
 @section('title', 'Chat dengan ' . $otherUser->name)
 
+@section('styles')
+<style>
+    /* Hide bottom nav on specific chat conversation room page */
+    .bottom-nav {
+        display: none !important;
+    }
+</style>
+@endsection
+
 @section('content')
 <!-- Header Bar -->
 <div class="header-bar" style="justify-content: flex-start; gap: 15px;">

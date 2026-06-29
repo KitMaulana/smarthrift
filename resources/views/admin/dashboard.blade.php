@@ -6,14 +6,21 @@
 <!-- Header Bar -->
 <div class="header-bar" style="border-bottom: none;">
     <div class="title" style="letter-spacing: 0.1em; text-align: left;">Admin Panel</div>
-    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-        @csrf
-        <button type="submit" class="action-icon" style="background: none; border: none; cursor: pointer; color: var(--text-primary);">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <a href="{{ route('chat.index') }}" class="action-icon" style="color: var(--text-primary);">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
             </svg>
-        </button>
-    </form>
+        </a>
+        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="submit" class="action-icon" style="background: none; border: none; cursor: pointer; color: var(--text-primary);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+                </svg>
+            </button>
+        </form>
+    </div>
 </div>
 
 <div class="app-content">

@@ -93,7 +93,7 @@
     <!-- Metode Pembayaran Section -->
     <div class="detail-section" style="border-bottom: none;">
         <div class="detail-section-title">Metode Pembayaran</div>
-        <div class="payment-methods-row">
+        <div class="payment-methods-row" style="margin-bottom: 15px;">
             @if($product->payment_method === 'qris' || $product->payment_method === 'both')
                 <div class="payment-badge">QRIS</div>
             @endif
@@ -101,38 +101,38 @@
                 <div class="payment-badge">COD</div>
             @endif
         </div>
-    </div>
-</div>
 
-<!-- Fixed Bottom Actions -->
-<div class="detail-actions-fixed" style="bottom: 90px; z-index: 110;">
-    @guest
-        <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Penjual</a>
-        <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
-        <a href="{{ route('login') }}" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</a>
-    @else
-        @if(Auth::id() === $product->seller_id)
-            @if($admin)
-                <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.85rem; padding: 10px 15px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
-            @endif
-            <div style="flex: 2; text-align: center; color: var(--text-muted); font-style: italic; font-size: 0.85rem; align-self: center;">
-                Ini adalah pakaian Anda.
-            </div>
-        @else
-            <a href="{{ route('chat.show', ['userId' => $product->seller_id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Penjual</a>
-            @if($admin)
-                <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
+        <!-- Actions Row -->
+        <div style="display: flex; gap: 10px; width: 100%; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px; margin-top: 15px;">
+            @guest
+                <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px;">Chat Penjual</a>
+                <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px;">Chat Admin</a>
+                <a href="{{ route('login') }}" class="btn-primary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; border-radius: 8px;">Beli</a>
             @else
-                <button onclick="alert('Admin tidak tersedia saat ini.')" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px;">Chat Admin</button>
-            @endif
-            
-            @if(Auth::user()->isPelanggan())
-                <a href="{{ route('buyer.checkout', $product->id) }}" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</a>
-            @else
-                <!-- Non-customers are prompted to register as customer to buy -->
-                <button onclick="alert('Anda harus masuk dengan akun Pelanggan untuk melakukan pembelian. Akun Kurir/Seller/Admin tidak dapat melakukan pembelian.')" class="btn-primary" style="font-size: 0.8rem; padding: 10px 5px;">Beli</button>
-            @endif
-        @endif
-    @endguest
+                @if(Auth::id() === $product->seller_id)
+                    @if($admin)
+                        <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.85rem; padding: 12px 15px; display: flex; align-items: center; justify-content: center; border-radius: 8px; width: 100%;">Chat Admin</a>
+                    @endif
+                    <div style="width: 100%; text-align: center; color: var(--text-muted); font-style: italic; font-size: 0.85rem; margin-top: 10px;">
+                        Ini adalah pakaian Anda.
+                    </div>
+                @else
+                    <a href="{{ route('chat.show', ['userId' => $product->seller_id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px;">Chat Penjual</a>
+                    @if($admin)
+                        <a href="{{ route('chat.show', ['userId' => $admin->id, 'product_id' => $product->id]) }}" class="btn-secondary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px;">Chat Admin</a>
+                    @else
+                        <button onclick="alert('Admin tidak tersedia saat ini.')" class="btn-secondary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; border-radius: 8px;">Chat Admin</button>
+                    @endif
+                    
+                    @if(Auth::user()->isPelanggan())
+                        <a href="{{ route('buyer.checkout', $product->id) }}" class="btn-primary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; border-radius: 8px;">Beli</a>
+                    @else
+                        <!-- Non-customers are prompted to register as customer to buy -->
+                        <button onclick="alert('Anda harus masuk dengan akun Pelanggan untuk melakukan pembelian. Akun Kurir/Seller/Admin tidak dapat melakukan pembelian.')" class="btn-primary" style="font-size: 0.8rem; padding: 12px 5px; flex: 1; border-radius: 8px;">Beli</button>
+                    @endif
+                @endif
+            @endguest
+        </div>
+    </div>
 </div>
 @endsection
