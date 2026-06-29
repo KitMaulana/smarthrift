@@ -105,7 +105,7 @@
 </div>
 
 <!-- Fixed Bottom Actions -->
-<div class="detail-actions-fixed">
+<div class="detail-actions-fixed" style="bottom: 90px; z-index: 110;">
     @guest
         <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Penjual</a>
         <a href="{{ route('login') }}" class="btn-secondary" style="font-size: 0.8rem; padding: 10px 5px; display: flex; align-items: center; justify-content: center;">Chat Admin</a>
